@@ -125,7 +125,7 @@ t.test(control_vec_BSL_1, treatment_vec_BSL_1)
 Q.2.2 The type of data1 is *list*.
 
 Q.2.4
-Is this mean difference?
+Is this mean difference? No
 # DO THIS
 
 Q2.7
@@ -143,6 +143,21 @@ We trust data1 more because its bigger
 
 *** Alon's Parts - Q3 ***
 
+```{r}
+
+#Q3.1
+CLIP_data <- read.table(file.path("./CLIP_data.BED")
+                        ,header=TRUE)
+library("GenomicRanges")
+gr <- GRanges(CLIP_data)
+gr
+
+#Q3.2
+gr_flank <- flank(gr, width=200, start=FALSE, both=FALSE)
+gr_flank
+
+```
+
 
 
 
@@ -159,3 +174,21 @@ ggplot(data = data2_wo_NA,mapping =  aes(x=Treatment, y=Blood_Sugar_Levels)) +
 
 
 hist(x = control_vec_BSL,treatment_vec_BSL)
+
+
+
+
+
+
+
+
+
+gr <- GRanges(seqnames =CLIP_data["chromosome"], IRanges(start=c(CLIP_data["start"]),end=c(CLIP_data["end"])),strand="+")
+gr
+
+
+
+
+
+gr <- GRanges(seqnames="chromosome", IRanges(start=start_wo_head,end=end_wo_head),strand="+")
+seqnames(gr)
