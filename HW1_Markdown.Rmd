@@ -1,29 +1,46 @@
 ---
-title: "HW1_Markdown"
-#date: "4/20/2021"
+title: "236523 - Introduction to Bioinformatics - Spring 21 - HW1"
 output:
   word_document: default
-editor_options: 
+  pdf_document: default
+editor_options:
   chunk_output_type: console
 ---
 
-
-
-*** Setup ***
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Roy Bernea - 316315829 ; Alon Hacohen - 311587653
 
+# Qusetion 1
 
-*** Roy's Parts - Q1 ***
+Following is the code and answers for the questions under the "Question 1" Section - as instructed in the assignment:
 
-## FIX THIS
+### Q1.1
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-## Q1.2
+x1<-runif(6, min = 1, max = 20)
+x2<-runif(6, min = 1, max = 20)
+x3<-runif(6, min = 1, max = 20)
+x4<-runif(6, min = 1, max = 20)
+mat1<-rbind(x1,x2,x3,x4)
+print(mat1)
 
-```{r Q1.1}
+```
+
+### Q1.2
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
+sum_of_rows<-apply(mat1,1,sum)
+print(sum_of_rows)
+
+```
+
+### Q1.3
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
 tentative.normalization <- function(mat,npar){
   max_vector_row <-apply(mat,1,max)
   max_vector_col <-apply(mat,2,max)
@@ -33,162 +50,154 @@ tentative.normalization <- function(mat,npar){
   if(npar==2){
     return(t(t(mat)/max_vector_col))
   }
-  
   return(mat)
 }
-x1<-runif(6, min = 1, max = 20)
-x2<-runif(6, min = 1, max = 20)
-x3<-runif(6, min = 1, max = 20)
-x4<-runif(6, min = 1, max = 20)
-mat1<-rbind(x1,x2,x3,x4)
-sum_of_rows<-apply(mat1,1,sum)
+
+```
+
+### Q1.4
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
 mat1.norm.rows<-tentative.normalization(mat1,1)
 mat1.norm.columns<-tentative.normalization(mat1,2)
+
+print(mat1.norm.rows)
+print(mat1.norm.columns)
+
+```
+
+### Q1.5
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
 heatmap(mat1.norm.rows)
 heatmap(mat1.norm.columns)
+
 ```
 
 
-*** Q2 ***
+# Question 2
 
+Following is the code and answers for the questions under the "Question 2" Section - as instructed in the assignment:
 
-```{r Q2}
+### Q2.1
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-## Q2.1
 data1.file <- file.path("./data1.csv")
 data2.file <- file.path("./data2.csv")
 data1 <- read.csv(data1.file)
 data2 <- read.csv(data2.file)
 
-## Q2.2
-data1_type <- typeof(data1)
+```
+
+### Q2.2
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
+data1_type <- class(data1)
 print(data1_type)
 
-## Q2.3
+```
+The type of data1 is **data.frame**.
+As you may see in our code, the function used for this is the class() function, which allows us to figure out the data structure of an object.
+
+### Q2.3
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
+library(dplyr)
+
 data2_wo_NA <- filter(na.omit(data2))
 control <- filter(data2_wo_NA, Treatment == "Placebo")
 treatment <- filter(data2_wo_NA, Treatment == "HF123")
-
-## Q2.4
 print(control)
-control_vec_BSL <- 
-  apply(control["Blood_Sugar_Levels"],1,as.double)
-treatment_vec_BSL <- 
-  apply(treatment["Blood_Sugar_Levels"],1,as.double)
+print(treatment)
+
+```
+* We chose to already remove the "NA" rows from the data, as they do not provide any additional information for our uses. 
+
+### Q2.4
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
+control_vec_BSL <- apply(control["Blood_Sugar_Levels"],1,as.double)
+treatment_vec_BSL <- apply(treatment["Blood_Sugar_Levels"],1,as.double)
 mean_control <- mean(control_vec_BSL)
 mean_treatment <- mean(treatment_vec_BSL)
-mean_difference <- mean_control - mean_treatment
+mean_difference <- abs(mean_control-mean_treatment)
+
 print(mean_difference)
 
-## Q2.5
-library(ggplot2)
-library(RColorBrewer) # import ggplot2
+```
+As you may notice, the Mean Difference is **3.041439**.
+This mean difference is **not significant** - this variable is not of any statistical value regarding the context of the question, and does not really help us determine any conclusions about the data.
 
-# DO THE HIST
-hist(control_vec_BSL, col=rgb(0,0,1,0.3), main="histogram of blood sugar levels in the control and treatment groups", xlab="Blood sugar level")
+### Q.2.5
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
+hist(control_vec_BSL, col=rgb(0,0,1,0.3), main="Blood Sugar Levels, Control & Treatment groups", xlab="Blood Sugar Level", xlim=c(15,40))
 hist(treatment_vec_BSL, col=rgb(1,0,0,0.5), add=T)
 
-# to check parameters
+```
+* Please notice that the *blue* represents the **control** group, and the *red* represents the **treatment** group.
 
+### Q.2.6
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-## Q2.6
-# Do The Boxplot
-
-## Q2.7.1
-t.test(control_vec_BSL, treatment_vec_BSL)
-
-## Q2.7.2
-data1_wo_NA <- filter(na.omit(data1))
-control1 <- filter(data1_wo_NA, Treatment == "Placebo")
-treatment1 <- filter(data1_wo_NA, Treatment == "HF123")
-
-control_vec_BSL_1 <- 
-  apply(control1["Blood_Sugar_Levels"],1,as.double)
-treatment_vec_BSL_1 <- 
-  apply(treatment1["Blood_Sugar_Levels"],1,as.double)
-mean_control_1 <- mean(control_vec_BSL_1)
-mean_treatment_1 <- mean(treatment_vec_BSL_1)
-mean_difference_1 <- mean_control_1 - mean_treatment_1
-print(mean_difference_1)
-
-t.test(control_vec_BSL_1, treatment_vec_BSL_1)
-
-
-
-## Q2.8
-
-
-
+boxplot(control_vec_BSL, treatment_vec_BSL, names=c("Control","Treatment"), main="Control & Treatment groups - Boxplot (data2)")
 
 ```
 
-Q.2.2 The type of data1 is *list*.
+### Q2.7
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-Q.2.4
-Is this mean difference? No
-# DO THIS
+t.test(control_vec_BSL, treatment_vec_BSL)
 
-Q2.7
-p-value > 0.05 => does not condradict the null hypothesis, therefore we cannot say it is not noise
+```
+The p-value calculated in the t-test is **0.05894**.
+This p-value is *larger than 0.05*, which means that we can not contradict the **Null Hypothesis** based on it.
+In simpler words, it means that we can not state that the difference between the *control* group and the *treatment* group is significant (at least not based on *data2*), therefore we are unsure if the treatment has any real effect on the patients.
 
-Q2.8
-p-value < 0.05 => does indeed contradict the null hypothesis, therefore we can say it is not noise
+### Q2.8
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-Q2.9
-We trust data1 more because its bigger
+data1_wo_NA <- filter(na.omit(data1))
+control1 <- filter(data1_wo_NA, Treatment == "Placebo")
+treatment1 <- filter(data1_wo_NA, Treatment == "HF123")
+control_vec_BSL_1 <- apply(control1["Blood_Sugar_Levels"],1,as.double)
+treatment_vec_BSL_1 <- apply(treatment1["Blood_Sugar_Levels"],1,as.double)
+
+boxplot(control_vec_BSL_1, treatment_vec_BSL_1, names=c("Control","Treatment"), main="Control & Treatment groups - Boxplot (data1)")
+
+t.test(control_vec_BSL_1, treatment_vec_BSL_1)
+
+```
+This time, based on data1, the p-value calculated in the t-test is **1.737x10^-12)^**.
+This p-value is *smaller than 0.05*, which means that we **can** indeed contradict the **Null Hypothesis** based on it.
+In simpler words, it means that this time, based on data 1, we **can** state that the difference between the *control* group and the *treatment* group **is significant**, therefore it seems that the treatment does have a real effect on the patients.
+
+### Q2.9
+When comparing between the t-tests of data1 vs t-test of data2, we trust the result of the first test more (meaning the **t-test performed on data1**).
+The reason for that is that data1 includes 846 records, while data2 includes only 24 records.
+This means we rely on data from a lot more patients when performing the t-test on data1, which allows the distribution to probably be closer to the one in real-life. This also affects the p-value of the t-test, as seen in previous questions.
+Another way to see that data1 is more diverse than data 2 (which will lead to better results) is looking at the *Gender* column - examining the records of data1 and data2 shows us that the majority of the patients in data2 (over 90%) are females, while the patients in data1 divide into almost even groups of males and females.
 
 
+# Question 3
 
+Following is the code for generating the GRanges objects - as instructed in the assignment:
 
+### Q3.1
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
 
-*** Alon's Parts - Q3 ***
-
-```{r}
-
-#Q3.1
-CLIP_data <- read.table(file.path("./CLIP_data.BED")
-                        ,header=TRUE)
+CLIP_data <- read.table(file.path("./CLIP_data.BED"),header=TRUE)
 library("GenomicRanges")
 gr <- GRanges(CLIP_data)
 gr
 
-#Q3.2
+```
+
+### Q3.2
+```{r,echo=TRUE,eval=TRUE, warning=FALSE, message=FALSE}
+
 gr_flank <- flank(gr, width=200, start=FALSE, both=FALSE)
 gr_flank
 
 ```
 
-
-
-
-
-
-
-
-ggplot(data = data2_wo_NA,mapping =  aes(x=Treatment, y=Blood_Sugar_Levels, color=Placebo)) +
-    geom_point()
-
-
-ggplot(data = data2_wo_NA,mapping =  aes(x=Treatment, y=Blood_Sugar_Levels)) +
-    geom_boxplot()
-
-
-hist(x = control_vec_BSL,treatment_vec_BSL)
-
-
-
-
-
-
-
-
-
-gr <- GRanges(seqnames =CLIP_data["chromosome"], IRanges(start=c(CLIP_data["start"]),end=c(CLIP_data["end"])),strand="+")
-gr
-
-
-
-
-
-gr <- GRanges(seqnames="chromosome", IRanges(start=start_wo_head,end=end_wo_head),strand="+")
-seqnames(gr)
